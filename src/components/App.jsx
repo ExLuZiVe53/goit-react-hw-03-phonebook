@@ -31,7 +31,6 @@ export class App extends Component {
         ...data,
         id: nanoid(),
       };
-      console.log('data :>> ', data);
 
       this.setState(prevState => ({
         contacts: [...prevState.contacts, addContact],
@@ -62,9 +61,20 @@ export class App extends Component {
     });
   };
 
-  // formAddHandler = data => {
-  //   console.log('data :>> ', data);
-  // };
+  componentDidMount() {
+    const stringifiledContacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(stringifiledContacts) ?? [];
+    this.setState({
+      contacts: parsedContacts,
+    });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts.length !== prevState.contacts.length) {
+      const stringifiledContacts = JSON.stringify(this.state.contacts);
+      localStorage.setItem('contacts', stringifiledContacts);
+    }
+  }
 
   render() {
     const { filter } = this.state;
